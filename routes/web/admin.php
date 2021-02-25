@@ -9,11 +9,6 @@ use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\PermissionUserController;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-//    auth()->loginUsingId(10);
-    return view('admin.index');
-});
 Route::resource('users', UserController::class);
 Route::get('user/{user}/permission', [PermissionUserController::class, 'create'])->name('user.permissions');
 Route::post('user/{user}/permission', [PermissionUserController::class, 'store'])->name('user.permissions.store');
