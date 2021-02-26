@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\PermissionUserController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,4 +33,7 @@ Route::resource('roles', RoleController::class);
 Route::resource('categories', CategoryController::class);
 
 
+Route::post('attributes/values' , [AttributeController::class , 'getValueAttr']);
 
+
+   

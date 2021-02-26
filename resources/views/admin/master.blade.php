@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title')</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,6 +16,8 @@
     <link rel="stylesheet" href="/plugins/iCheck/flat/blue.css">
     <!-- Morris chart -->
     <link rel="stylesheet" href="/plugins/morris/morris.css">
+    <link rel="stylesheet" href="/plugins/select2/select2.css">
+
     <!-- jvectormap -->
     <link rel="stylesheet" href="/plugins/jvectormap/jquery-jvectormap-1.2.2.css">
     <!-- Date Picker -->
@@ -27,7 +30,6 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
     <!-- bootstrap rtl -->
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
-
     @yield('style')
 
 </head>
@@ -91,5 +93,9 @@
 <!-- AdminLTE App -->
 <script src="{{ asset('js/admin.js') }}"></script>
 @include('sweet::alert')
+
+
+<script src="/plugins/select2/select2.full.js"></script>
+@yield('script')
 </body>
 </html>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Attribute;
 use App\Models\Product;
 use App\Models\User;
 use Dotenv\Validator;
@@ -55,10 +56,17 @@ class ProductController extends Controller
             'title' => 'required',
             'description' => 'required',
             'inventory' => 'required|int',
-            'price' => 'required|int'
-        ]);
-        $request->user()->products()->create($request->all());
+            'price' => 'required|int',
+            'category' => 'required',
+            'attributes' => 'array'
 
+        ]);
+
+        $product = $request->user()->products()->create($request->all());
+        $product->category()->sync($request->input('category'));
+
+
+        $this->setAttributeProduct($request, $product);
         alert()->success('محصول با موفقیت ایجاد شد');
 
         return redirect(route('admin.products.index'));
@@ -83,12 +91,12 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        if (! session()->has('sr')){
-            session()->flash('sr' , session('_previous.url'));
-        }else{
+        if (!session()->has('sr')) {
+            session()->flash('sr', session('_previous.url'));
+        } else {
             session()->reflash();
         }
-        return view('admin.products.edit' , compact('product'));
+        return view('admin.products.edit', compact('product'));
     }
 
     /**
@@ -105,16 +113,26 @@ class ProductController extends Controller
                 'title' => 'required',
                 'description' => 'required',
                 'inventory' => 'required|int',
-                'price' => 'required|int'
+                'price' => 'required|int',
+                'category' => 'required',
+                'attributes' => 'array'
+
+
             ]
-            );
-    if ($Data->fails()){
-        session()->flash('sr' , session('sr'));
-        return back()->withErrors($Data);
-    }
-     $product->update($request->all());
-     alert()->success('با موفقیت ویرایش شد');
-   return redirect(session('sr'));
+        );
+        if ($Data->fails()) {
+            session()->flash('sr', session('sr'));
+            return back()->withErrors($Data);
+        }
+        $product->update($request->all());
+        $product->category()->sync($request->input('category'));
+
+        $product->attributes()->detach();
+
+        $this->setAttributeProduct($request, $product);
+
+        alert()->success('با موفقیت ویرایش شد');
+        return redirect(session('sr'));
     }
 
     /**
@@ -129,5 +147,27 @@ class ProductController extends Controller
         $product->delete();
         alert()->warning('محصول حذف گردید');
         return back();
+    }
+
+    /**
+     * @param Request $request
+     * @param $product
+     */
+    public function setAttributeProduct(Request $request, $product)
+    {
+        $attributes = collect($request->input('attributes'));
+        $attributes->each(function ($item) use ($product) {
+
+            if (is_null($item['name']) || is_null($item['value'])) return;
+            $attr = Attribute::firstOrCreate([
+                'name' => $item['name']
+            ]);
+            $val = $attr->values()->firstOrCreate(
+                ['name' => $item['value']]
+            );
+
+            $product->attributes()->attach($attr->id, ['value_id' => $val->id]);
+
+        });
     }
 }

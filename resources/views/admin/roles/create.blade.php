@@ -23,8 +23,7 @@
                         @enderror
                     </div>
                 </div>
-
-                <div class="form-group">
+  <div class="form-group">
                     <label>دسترسی ها</label>
                     <select name="permissions[]" multiple class="form-control">
                         @foreach($permissions as $permission)
@@ -39,6 +38,7 @@
                         @enderror
                     </div>
                 </div>
+              
 
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">توضیحات</label>
